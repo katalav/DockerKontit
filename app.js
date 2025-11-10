@@ -13,17 +13,14 @@ const {engine} = require('express-handlebars');
 // ---------------------------
 const dbOperations = require('./dbOperations');
 
-// A module to demonstrate local dependency to be included in the container
-//const pgtools =  require('./postgres-tools')
-
 // INITIALIZATION
 // --------------
 
 // Create an express app
 const app = express();
 
-// Define a TCP port to listen: read env or use 8080 if undefined
-const PORT = process.env.PORT || 8080
+// Define a TCP port to listen: read env or use 9000 if undefined
+const PORT = process.env.APP_CONTAINER_PORT || 9000
 
 // Set a folders for static files like css, images or icons
 app.use(express.static('public'));
