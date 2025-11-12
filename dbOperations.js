@@ -1,29 +1,42 @@
-// A module for accessing POSRGRESQL
-// =================================
 
-// EXTERNAL LIBRARIES
-//-------------------
+// A MODULE FOR ACCESSING POSTGRESQL DATABASES
+// ===========================================
 
-//Library for handling dotenv
-const dotenv = require('dotenv')
-dotenv.config();
+// EXTERNAL LIBARIES
+// -----------------
 
-//Class for creating PG-pool objects using PG
+// Library for handling .env variables
+const dotenv = require('dotenv');
+
+// Class for creating PG-pool objects using PG library
 const Pool = require('pg').Pool
 
-
-
-//SETTINGS
+// SETTINGS
 // --------
 
+// Initialize .env for use and save variables to be exported
+dotenv.config();
+const currentEnv = process.env;
 
+// Define variables to store database host name and port
+let HOST = ''
+let PORT = ''
 
-// Read environment variables from .env
-const HOST = process.env.POSTGRESQL_HOST
-const PORT = process.env.POSTGRESQL_USER_PORT
-const DATABASE= process.env.POSTGRESQL_DB
-const USER = process.env.POSTGRESQL_USER
-const PASSWORD = process.env.POSTGRESQL_USER_PASSWORD
+// Read RUN_ENV to change between production and development
+if (currentEnv.RUN_ENV == 'dev') {
+    // Read development environment variables from .env
+    HOST = currentEnv.POSTGRESQL_DEV_HOST; // localhost
+    PORT = currentEnv.POSTGRESQL_USER_PORT; // 5434   
+} else {
+    // Read production environment variables
+    HOST = currentEnv.POSTGRESQL_PROD_HOST; // Container postgresql
+    PORT = currentEnv.POSTGRESQL_CONTAINER_PORT; // Container port 5432
+};
+
+// Define independent variables for connection settings
+const DATABASE = currentEnv.POSTGRESQL_DB;
+const USER = currentEnv.POSTGRESQL_USER;
+const PASSWORD = currentEnv.POSTGRESQL_USER_PASSWORD;
 
 // Database connection settings
 const connection = {
@@ -37,15 +50,14 @@ const connection = {
 // Create a new Pool object for queries
 const pool = new Pool(connection);
 
-// DATABASE OPERATIONS 
-//--------------------
+// DATABASE OPERATIONS
+// -------------------
 
 // Get all rows from table kontti
 const getContainerData = async () => {
-    let quary = 'SELECT * FROM public.kontti';
-    let resultset = await pool.query(quary);
-    return resultset; 
-
-};
-
-module.exports = {getContainerData}
+    let query = 'SELECT * FROM public.kontti';
+    let resultset = await pool.query(query);
+    return resultset;
+}
+// Export functions needed by the main app
+module.exports = {currentEnv, getContainerData}

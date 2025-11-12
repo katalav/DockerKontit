@@ -1,16 +1,13 @@
-version: '3.8' # Määrittelee käytettävän version
-# Määritellään luotavat kontit
+version: '3.8' 
 services:
-  # PostgreSQL-kontin asetukset
   postgresql:
-    image: postgres:18-trixie # Peruslevykuva muodosssa nimi:tagi-tagi-tagi
+    image: postgres:18-trixie
     ports:
-      - 5434:5432 # Oikeassa koneessa on jo 5432 portti käytössä annetaan kontin ulosnäkyväksi portiksi 5434
+      - 5434:5432
     environment:
-      - POSTGRES_PASSWORD=Q2werty7 # Salasanan luominen
+      - POSTGRES_PASSWORD=Q2werty7
     volumes:
-      - db:/var/lib/postgresql # Ohjataan postgres-datahakemiston tiedot taltioon db
-  # Node-sovelluksen kontin asetukset
+      - db:/var/lib/postgresql 
   app:
     build: 
       context: . 
@@ -22,4 +19,4 @@ services:
       - postgresql
     command: node app.js
 volumes: 
-  db: # Luodaan db-taltio
+  db: 

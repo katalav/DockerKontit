@@ -11,7 +11,9 @@ const {engine} = require('express-handlebars');
 
 // Local libraries and modules
 // ---------------------------
-const dbOperations = require('./dbOperations');
+
+// A module to demonstrate local dependency to be included in the container
+const dbOperations = require('./dbOperations')
 
 // INITIALIZATION
 // --------------
@@ -20,7 +22,7 @@ const dbOperations = require('./dbOperations');
 const app = express();
 
 // Define a TCP port to listen: read env or use 9000 if undefined
-const PORT = process.env.APP_CONTAINER_PORT || 9000
+const PORT = dbOperations.currentEnv.APP_CONTAINER_PORT || 9000
 
 // Set a folders for static files like css, images or icons
 app.use(express.static('public'));
@@ -34,21 +36,22 @@ app.set('views', './views');
 // Setup URL parser to use extended option
 app.use(express.urlencoded({extended: true}))
 
-
 // URL ROUTES
 // ----------
 
 
-// Route to home page
+// Route to home page, a static web page
 app.get('/', (req, res) => {
     res.render('home')
 });
 
-// A test route to test.handlebars page
+// A test route to tiedot page using dynamic data
 app.get('/tiedot', (req, res) => {
-    dbOperations.getContainerData().then((resultset) => {
-        res.render('tiedot',{containerData: resultset.rows});
+
+    dbOperations.getContainerData().then((resultset) =>{
+        res.render('tiedot', {containerData: resultset.rows});
     })
+    
 });
 
 // SERVER START
